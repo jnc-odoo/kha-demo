@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="view_capacity_planning_form" model="ir.ui.view">
+        <field name="name">view_capacity_planning_form</field>
+        <field name="model">capacity.planning</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button type="object" name="action_create_mo" string="Create MO" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="project_id"/>
+                            <field name="production_week"/>
+                            <field name="delivery_week"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                            <field name="mill_id"/>
+                            <field name="actual_volume"/>
+                            <field name="planning_volume"/>
+                            <field name="production_nesting"/>
+                            <field name="complexity_ratio"/>
+                            <field name="capacity"  widget="progressbar"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                    <group>
+                        <field name="element_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_capacity_planning_tree" model="ir.ui.view">
+        <field name="name">view_capacity_planning_tree</field>
+        <field name="model">capacity.planning</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="project_id"/>
+                <field name="mill_id"/>
+                <field name="production_week"/>
+                <field name="delivery_week"/>
+                <field name="actual_volume"/>
+                <field name="planning_volume"/>
+                <field name="capacity"  widget="progressbar"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_capacity_planning" model="ir.actions.act_window">
+        <field name="name">Capacity Planning</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">capacity.planning</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_capacity_planning"
+        name="Capacity Planning"
+        action="action_capacity_planning"
+        parent="base.menu_custom"
+        sequence="90"/>
+        
+</odoo>
