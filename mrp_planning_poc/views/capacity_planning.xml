@@ -1,15 +1,28 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
+    <record id="action_planning_mo_count" model="ir.actions.act_window">
+        <field name="name">Productions</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('capacity_planning_id', '=', active_id)]</field>
+    </record>
+
     <record id="view_capacity_planning_form" model="ir.ui.view">
         <field name="name">view_capacity_planning_form</field>
         <field name="model">capacity.planning</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button type="object" name="action_create_mo" string="Create MO" class="oe_highlight"/>
+                    <button type="object" name="action_create_mo" string="Create MO" class="oe_highlight" attrs="{'invisible': [('state', '=', 'planned')]}"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_planning_mo_count)d" type="action" class="oe_stat_button" icon="fa-cogs" string=" ">
+                            <field name="production_count" string="Productions" widget="statinfo"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name"/>
@@ -18,13 +31,14 @@
                     <group>
                         <group>
                             <field name="type"/>
-                            <field name="project_id"/>
-                            <field name="production_week"/>
-                            <field name="delivery_week"/>
+                            <field name="project_id" required="1"/>
+                            <field name="production_week" required="1"/>
+                            <field name="delivery_week" required="1"/>
+                            <field name="delivery_week_number"/>
                         </group>
                         <group>
                             <field name="responsible_id"/>
-                            <field name="mill_id"/>
+                            <field name="mill_id" required="1"/>
                             <field name="actual_volume"/>
                             <field name="planning_volume"/>
                             <field name="production_nesting"/>
@@ -36,9 +50,21 @@
                         <field name="notes"/>
                     </group>
                     <group>
-                        <field name="element_ids"/>
+                        <field name="allowed_lot_ids" invisible="0"/>
+                        <field name="element_ids" domain="[('id', 'in', allowed_lot_ids)]">
+                            <tree delete="1">
+                                <field name="name"/>
+                                <field name="product_id"/>
+                            </tree>
+                        </field>
                     </group>
                 </sheet>
+                <div class="o_attachment_preview"/>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -52,6 +78,7 @@
                 <field name="mill_id"/>
                 <field name="production_week"/>
                 <field name="delivery_week"/>
+                <field name="delivery_week_number"/>
                 <field name="actual_volume"/>
                 <field name="planning_volume"/>
                 <field name="capacity"  widget="progressbar"/>
@@ -66,10 +93,14 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_capacity_planning"
-        name="Capacity Planning"
-        action="action_capacity_planning"
-        parent="base.menu_custom"
-        sequence="90"/>
-        
+
+  <menuitem
+    id="capacity_menu_root"
+    name="Capacity Planning"
+    web_icon="mrp_planning_poc,static/description/icon.png"
+  >
+      <menuitem id="menu_action_capacity_planning" action="action_capacity_planning" />
+
+  </menuitem>
+
 </odoo>
